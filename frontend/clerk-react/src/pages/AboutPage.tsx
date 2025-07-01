@@ -9,13 +9,13 @@ export default function AboutPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("Ritesh Kumar Singh");
   const [title, setTitle] = useState("Founder & Developer");
-  const [role, setRole] = useState("Full Stack Engineer");
+  const [role, setRole] = useState("Full Stack Engineer And Devops Engineer");
   const [bio, setBio] = useState("Building tools that help people share their ideas with the world, one post at a time.");
-  const [location, setLocation] = useState("New Delhi, IN");
-  const [joinDate, setJoinDate] = useState("January 2025");
+  const [location, setLocation] = useState("Odisha, IN");
+  const [joinDate, setJoinDate] = useState("July 2025");
   const [founderRole, setFounderRole] = useState("Founder");
   
-  // Temporary editing states
+
   const [tempName, setTempName] = useState(name);
   const [tempTitle, setTempTitle] = useState(title);
   const [tempRole, setTempRole] = useState(role);
@@ -43,7 +43,7 @@ export default function AboutPage() {
 
   const handleEdit = () => {
     setIsEditing(true);
-    // Set temp values to current values
+   
     setTempName(name);
     setTempTitle(title);
     setTempRole(role);
@@ -54,7 +54,7 @@ export default function AboutPage() {
   };
 
   const handleSave = () => {
-    // Save temp values to main state
+   
     setName(tempName);
     setTitle(tempTitle);
     setRole(tempRole);
@@ -66,7 +66,7 @@ export default function AboutPage() {
   };
 
   const handleCancel = () => {
-    // Reset temp values to original values
+  
     setTempName(name);
     setTempTitle(title);
     setTempRole(role);
