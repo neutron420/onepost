@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
+// Floating animated SVG background paths
 function FloatingPaths({ position }: { position: number }) {
   const paths = Array.from({ length: 36 }, (_, i) => {
     const offset = i * 5 * position;
     const heightStep = i * 6;
 
-    // Adjusted coordinates to be more visible within viewBox
     const d = `M${50 + offset} ${50 + heightStep}
                C${50 + offset} ${50 + heightStep}
                ${120 + offset} ${200 + heightStep}
@@ -58,19 +59,57 @@ function FloatingPaths({ position }: { position: number }) {
   );
 }
 
+// Main animated background + CTA
 export function BackgroundPaths({ title = "One Post" }: { title?: string }) {
-  const words = title.split(" ");
+  const { isSignedIn } = useAuth(); // ✅ Check if user is signed in
   const navigate = useNavigate();
+  const words = title.split(" ");
 
   const handleDiscoverClick = () => {
-    navigate("/sign-up");
+    if (isSignedIn) {
+      navigate("/write-blog"); // ✅ Go to write page
+    } else {
+      navigate("/sign-in"); // 🔐 Ask to sign in
+    }
   };
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white">
-      {/* Animated Background */}
       <FloatingPaths position={1} />
       <FloatingPaths position={-0.5} />
+
+      {/* Top-left Logo */}
+      <div className="absolute top-0 left-0 z-20 p-6">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex items-center gap-2"
+        >
+          <motion.img
+            src="https://www.shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg"
+            alt="One Post Logo"
+            className="h-8 w-8"
+            initial={{ rotate: -180, scale: 0 }}
+            animate={{ rotate: 0, scale: 1 }}
+            transition={{
+              duration: 1,
+              ease: "easeOut",
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+            }}
+          />
+          <motion.h2
+            className="text-xl font-semibold text-gray-900"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
+            One Post
+          </motion.h2>
+        </motion.div>
+      </div>
 
       {/* Foreground Content */}
       <div className="relative z-10 container px-4 md:px-6 text-center">
@@ -104,7 +143,7 @@ export function BackgroundPaths({ title = "One Post" }: { title?: string }) {
             ))}
           </h1>
 
-          {/* Call-to-Action Button with Sign Up navigation */}
+          {/* Call-to-Action Button */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,7 +163,7 @@ export function BackgroundPaths({ title = "One Post" }: { title?: string }) {
               <span className="opacity-90 group-hover:opacity-100 transition-opacity">
                 Discover Excellence
               </span>
-              <motion.span 
+              <motion.span
                 className="ml-3 opacity-70 group-hover:opacity-100 transition-all duration-300 inline-block"
                 whileHover={{ x: 6 }}
               >
