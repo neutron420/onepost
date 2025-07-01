@@ -1,10 +1,17 @@
-import { SignedIn, SignedOut, SignInButton, UserButton, SignIn } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+  SignIn,
+} from "@clerk/clerk-react";
 import { Routes, Route } from "react-router-dom";
 import { BackgroundPaths } from "./components/ui/background-paths";
 import { Footer7 } from "./components/ui/footer-7";
 import HomePage from "./pages/home";
-import Write from "./pages/Write";         // ✅ Import this
-import BlogList from "./pages/BlogList";   // ✅ Import this
+import Write from "./pages/Write";
+import BlogList from "./pages/BlogList";
+import AboutPage from "./pages/AboutPage"; // ✅ ✅ NEW
 
 export default function App() {
   return (
@@ -14,7 +21,6 @@ export default function App() {
         path="/"
         element={
           <div className="min-h-screen flex flex-col">
-            {/* ... your existing SignedOut and SignedIn UI */}
             <SignedOut>
               <div className="absolute top-6 right-6 z-20">
                 <SignInButton mode="redirect" redirectUrl="/dashboard" asChild>
@@ -39,7 +45,6 @@ export default function App() {
             <SignedIn>
               <div className="absolute top-6 right-6 z-20">
                 <div className="flex items-center gap-4">
-                  {/* ...user welcome and button */}
                   <div className="hidden sm:block px-4 py-2 bg-white/80 backdrop-blur-md 
                     rounded-xl border border-neutral-200/50 shadow-sm">
                     <span className="text-sm font-medium text-neutral-700">Welcome back</span>
@@ -76,7 +81,6 @@ export default function App() {
       <Route path="/dashboard" element={
         <SignedIn>
           <div className="min-h-screen flex flex-col">
-            {/* existing dashboard layout and HomePage */}
             <main className="flex-1 bg-gradient-to-br from-neutral-50 to-white">
               <HomePage />
             </main>
@@ -85,17 +89,20 @@ export default function App() {
         </SignedIn>
       } />
 
-      {/* ✅ New Route: Write Blog (protected) */}
+      {/* ✅ Write Blog */}
       <Route path="/write-blog" element={
         <SignedIn>
           <Write />
         </SignedIn>
       } />
 
-      {/* ✅ New Route: Blog List */}
+      {/* ✅ Blog List */}
       <Route path="/blogs" element={<BlogList />} />
 
-      {/* ✅ Sign In Redirect Route */}
+      {/* ✅ About Page Route */}
+      <Route path="/about" element={<AboutPage />} /> {/* ✅ ✅ NEW */}
+
+      {/* Sign In Redirect */}
       <Route path="/sign-in" element={<SignIn redirectUrl="/dashboard" />} />
     </Routes>
   );

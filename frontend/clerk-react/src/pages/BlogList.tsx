@@ -1,32 +1,56 @@
 import React, { useState } from "react";
 import { getBlogPosts } from "@/lib/blogService";
 import { useUser, UserButton } from "@clerk/clerk-react";
-import SidebarLayout from "@/components/SidebarLayout"; // ✅ import sidebar
+import SidebarLayout from "@/components/SidebarLayout";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaComment,
+  FaTrash,
+  FaEdit,
+  FaSave,
+  FaTimes,
+  FaUser,
+  FaCalendarAlt,
+} from "react-icons/fa";
 
-const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 3;
 
 const BlogList: React.FC = () => {
-  const blogs = getBlogPosts();
+  const initialBlogs = getBlogPosts();
   const { user } = useUser();
 
+  const [blogs, setBlogs] = useState(initialBlogs);
   const [likes, setLikes] = useState<{ [key: string]: number }>({});
+  const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
   const [comments, setComments] = useState<{ [key: string]: string[] }>({});
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [showComments, setShowComments] = useState<{ [key: string]: boolean }>({});
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
+  const [editingBlog, setEditingBlog] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState<{ [key: string]: string }>({});
 
   const handleLike = (blogId: string) => {
-    setLikes((prev) => ({
-      ...prev,
-      [blogId]: (prev[blogId] || 0) + 1,
-    }));
+    if (likedPosts[blogId]) {
+      setLikes((prev) => ({
+        ...prev,
+        [blogId]: Math.max((prev[blogId] || 0) - 1, 0),
+      }));
+      setLikedPosts((prev) => ({ ...prev, [blogId]: false }));
+    } else {
+      setLikes((prev) => ({
+        ...prev,
+        [blogId]: (prev[blogId] || 0) + 1,
+      }));
+      setLikedPosts((prev) => ({ ...prev, [blogId]: true }));
+    }
   };
 
   const handleAddComment = (blogId: string) => {
-    if (!newComment[blogId]) return;
+    if (!newComment[blogId]?.trim()) return;
     setComments((prev) => ({
       ...prev,
-      [blogId]: [...(prev[blogId] || []), newComment[blogId]],
+      [blogId]: [...(prev[blogId] || []), newComment[blogId].trim()],
     }));
     setNewComment((prev) => ({ ...prev, [blogId]: "" }));
   };
@@ -38,90 +62,184 @@ const BlogList: React.FC = () => {
     }));
   };
 
+  const handleDelete = (blogId: string) => {
+    if (confirm("Are you sure you want to delete this blog post?")) {
+      setBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
+    }
+  };
+
+  const handleEdit = (blogId: string, content: string) => {
+    setEditingBlog(blogId);
+    setEditedContent({ ...editedContent, [blogId]: content });
+  };
+
+  const handleSaveEdit = (blogId: string) => {
+    const updated = blogs.map((blog) =>
+      blog.id === blogId ? { ...blog, content: editedContent[blogId] } : blog
+    );
+    setBlogs(updated);
+    setEditingBlog(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingBlog(null);
+  };
+
   return (
     <SidebarLayout>
-      <div className="max-w-4xl mx-auto mt-10 px-4">
+      <div className="max-w-4xl mx-auto py-6 px-4">
         {user && (
-          <div className="flex items-center justify-between mb-8 p-4 bg-white shadow rounded-xl border">
-            <div>
-              <h2 className="text-xl font-semibold">Welcome, {user.fullName || "User"}</h2>
-              <p className="text-sm text-gray-500">{user.primaryEmailAddress?.emailAddress}</p>
+          <div className="bg-white border border-gray-200 shadow-md rounded-2xl p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold">Welcome, {user.fullName || "User"}</h2>
+                <p className="text-sm text-gray-600">{user.primaryEmailAddress?.emailAddress}</p>
+              </div>
+              <UserButton />
             </div>
-            <UserButton />
           </div>
         )}
 
-        <h2 className="text-3xl font-bold mb-6 text-center">📝 All Blogs</h2>
+        <h1 className="text-3xl font-bold text-center mb-8">All Blog Posts</h1>
 
         {blogs.length === 0 ? (
-          <p className="text-center text-gray-600">No blog posts yet.</p>
+          <div className="text-center py-12">
+            <p className="text-gray-600">No blog posts yet.</p>
+          </div>
         ) : (
-          <div className="space-y-10">
+          <div className="space-y-8">
             {blogs.slice(0, visibleCount).map((blog) => (
               <div
                 key={blog.id}
-                className="bg-white shadow-lg rounded-xl p-6 border border-gray-200"
+                className="bg-white border border-gray-200 rounded-2xl shadow-md p-6 transition hover:shadow-lg"
               >
-                <h3 className="text-2xl font-semibold text-black">{blog.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  by {blog.authorName} on {new Date(blog.createdAt).toDateString()}
-                </p>
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <FaUser className="text-xs" />
+                        {blog.authorName}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <FaCalendarAlt className="text-xs" />
+                        {new Date(blog.createdAt).toDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        editingBlog === blog.id
+                          ? handleCancelEdit()
+                          : handleEdit(blog.id, blog.content)
+                      }
+                      className="p-2 text-gray-500 hover:text-blue-600"
+                      title={editingBlog === blog.id ? "Cancel" : "Edit"}
+                    >
+                      {editingBlog === blog.id ? <FaTimes /> : <FaEdit />}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(blog.id)}
+                      className="p-2 text-gray-500 hover:text-red-600"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
 
                 {blog.imageUrl && (
                   <img
                     src={blog.imageUrl}
-                    alt="blog visual"
-                    className="mt-4 rounded-xl w-full max-h-[400px] object-cover"
+                    alt={blog.title}
+                    className="w-full h-64 object-cover rounded-xl mb-4"
                   />
                 )}
 
-                <p className="mt-4 text-gray-700">{blog.content}</p>
-
-                <div className="mt-6 flex items-center gap-6">
-                  <button
-                    onClick={() => handleLike(blog.id)}
-                    className="text-sm flex items-center gap-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full"
-                  >
-                    ❤️ {likes[blog.id] || 0} Likes
-                  </button>
-                  <button
-                    onClick={() => toggleComments(blog.id)}
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    {showComments[blog.id] ? "Hide" : "Show"} Comments
-                  </button>
-                </div>
-
-                {showComments[blog.id] && (
-                  <div className="mt-4 space-y-2">
-                    <input
-                      type="text"
-                      placeholder="Write a comment..."
-                      value={newComment[blog.id] || ""}
+                {editingBlog === blog.id ? (
+                  <div className="mb-4">
+                    <textarea
+                      className="w-full p-3 border border-gray-300 rounded-xl resize-none"
+                      rows={5}
+                      value={editedContent[blog.id] || ""}
                       onChange={(e) =>
-                        setNewComment((prev) => ({
+                        setEditedContent((prev) => ({
                           ...prev,
                           [blog.id]: e.target.value,
                         }))
                       }
-                      className="w-full p-2 border rounded text-sm"
                     />
                     <button
-                      onClick={() => handleAddComment(blog.id)}
-                      className="mt-1 text-sm bg-black text-white px-4 py-1 rounded hover:bg-gray-800 transition"
+                      onClick={() => handleSaveEdit(blog.id)}
+                      className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
                     >
-                      Add Comment
+                      <FaSave className="inline mr-1" />
+                      Save
                     </button>
+                  </div>
+                ) : (
+                  <p className="text-gray-800 mb-4 whitespace-pre-wrap">{blog.content}</p>
+                )}
 
-                    <div className="mt-3 space-y-2">
-                      {(comments[blog.id] || []).map((cmt, idx) => (
-                        <div
-                          key={idx}
-                          className="text-sm text-gray-700 bg-gray-100 p-2 rounded"
-                        >
-                          💬 {cmt}
-                        </div>
-                      ))}
+                <div className="flex items-center gap-4 mb-4">
+                  <button
+                    onClick={() => handleLike(blog.id)}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-xl transition ${
+                      likedPosts[blog.id]
+                        ? "text-red-600"
+                        : "text-gray-600 hover:text-red-600"
+                    }`}
+                  >
+                    {likedPosts[blog.id] ? <FaHeart /> : <FaRegHeart />}
+                    <span>{likes[blog.id] || 0}</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleComments(blog.id)}
+                    className="flex items-center gap-1 text-gray-600 hover:text-blue-600"
+                  >
+                    <FaComment />
+                    <span>
+                      {showComments[blog.id] ? "Hide" : "Show"} Comments (
+                      {(comments[blog.id] || []).length})
+                    </span>
+                  </button>
+                </div>
+
+                {showComments[blog.id] && (
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="flex gap-2 mb-4">
+                      <input
+                        type="text"
+                        placeholder="Write a comment..."
+                        value={newComment[blog.id] || ""}
+                        onChange={(e) =>
+                          setNewComment((prev) => ({
+                            ...prev,
+                            [blog.id]: e.target.value,
+                          }))
+                        }
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-xl"
+                      />
+                      <button
+                        onClick={() => handleAddComment(blog.id)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
+                      >
+                        Post
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {(comments[blog.id] || []).length === 0 ? (
+                        <p className="text-gray-500 text-sm">No comments yet.</p>
+                      ) : (
+                        (comments[blog.id] || []).map((comment, idx) => (
+                          <div key={idx} className="bg-gray-50 p-3 rounded-xl">
+                            <p className="text-gray-800">{comment}</p>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
@@ -129,12 +247,12 @@ const BlogList: React.FC = () => {
             ))}
 
             {visibleCount < blogs.length && (
-              <div className="text-center mt-6">
+              <div className="text-center py-4">
                 <button
                   onClick={() => setVisibleCount((prev) => prev + POSTS_PER_PAGE)}
-                  className="px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
+                  className="bg-gray-800 text-white px-6 py-2 rounded-xl hover:bg-gray-900"
                 >
-                  View More
+                  View More Blogs ({blogs.length - visibleCount} remaining)
                 </button>
               </div>
             )}
