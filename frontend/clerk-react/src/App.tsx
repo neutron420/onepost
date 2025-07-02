@@ -6,23 +6,26 @@ import {
   SignIn,
 } from "@clerk/clerk-react";
 import { Routes, Route } from "react-router-dom";
-import { BackgroundPaths } from "./components/ui/background-paths";
+import { BackgroundPaths, BackgroundPathsOverlay } from "./components/ui/background-paths";
 import { Footer7 } from "./components/ui/footer-7";
 import HomePage from "./pages/home";
 import Write from "./pages/Write";
 import BlogList from "./pages/BlogList";
-import AboutPage from "./pages/AboutPage"; // ✅ ✅ NEW
+import AboutPage from "./pages/AboutPage";
+import { PricingSectionDemo } from "./components/blocks/demo";
 
 export default function App() {
   return (
     <Routes>
-      {/* Public Landing Page */}
       <Route
         path="/"
         element={
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col bg-white">
+            {/* Full page background animation overlay */}
+            <BackgroundPathsOverlay />
+            
             <SignedOut>
-              <div className="absolute top-6 right-6 z-20">
+              <div className="absolute top-6 right-6 z-30">
                 <SignInButton mode="redirect" redirectUrl="/dashboard" asChild>
                   <button className="group relative px-8 py-3 bg-white/95 hover:bg-white 
                     text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl 
@@ -43,7 +46,7 @@ export default function App() {
             </SignedOut>
 
             <SignedIn>
-              <div className="absolute top-6 right-6 z-20">
+              <div className="absolute top-6 right-6 z-30">
                 <div className="flex items-center gap-4">
                   <div className="hidden sm:block px-4 py-2 bg-white/80 backdrop-blur-md 
                     rounded-xl border border-neutral-200/50 shadow-sm">
@@ -68,41 +71,52 @@ export default function App() {
               </div>
             </SignedIn>
 
-            <main className="flex-1">
+            {/* Main content with BackgroundPaths */}
+            <main className="flex-1 relative z-10">
               <BackgroundPaths title="One Post" />
             </main>
 
-            <Footer7 />
+            {/* Pricing Section with proper white background and z-index */}
+            <section className="bg-white/95 backdrop-blur-sm py-12 px-4 sm:px-8 lg:px-16 relative z-20">
+              <div className="max-w-7xl mx-auto">
+                <PricingSectionDemo />
+              </div>
+            </section>
+
+            <div className="relative z-20">
+              <Footer7 />
+            </div>
           </div>
         }
       />
 
-      {/* Dashboard Page */}
       <Route path="/dashboard" element={
         <SignedIn>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col bg-white">
             <main className="flex-1 bg-gradient-to-br from-neutral-50 to-white">
               <HomePage />
             </main>
+            
+            {/* Pricing Section with proper white background */}
+            <section className="bg-white py-12 px-4 sm:px-8 lg:px-16">
+              <div className="max-w-7xl mx-auto">
+                <PricingSectionDemo />
+              </div>
+            </section>
+            
             <Footer7 />
           </div>
         </SignedIn>
       } />
 
-      {/* ✅ Write Blog */}
       <Route path="/write-blog" element={
         <SignedIn>
           <Write />
         </SignedIn>
       } />
 
-      {/* ✅ Blog List */}
       <Route path="/blogs" element={<BlogList />} />
-
-      {/* ✅ About Page Route */}
-      <Route path="/about" element={<AboutPage />} /> {/* ✅ ✅ NEW */}
-
-      {/* Sign In Redirect */}
+      <Route path="/about" element={<AboutPage />} />
       <Route path="/sign-in" element={<SignIn redirectUrl="/dashboard" />} />
     </Routes>
   );
