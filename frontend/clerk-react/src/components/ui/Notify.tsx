@@ -66,8 +66,15 @@ export default function Notify() {
   };
 
   const getNotificationIcon = (type: string = 'info') => {
+    const iconColors = {
+      info: 'bg-blue-500',
+      success: 'bg-green-500', 
+      warning: 'bg-yellow-500',
+      error: 'bg-red-500'
+    };
+    
     return (
-      <div className="w-2 h-2 bg-black rounded-full"></div>
+      <div className={`w-2 h-2 ${iconColors[type as keyof typeof iconColors] || 'bg-black'} rounded-full`}></div>
     );
   };
 
