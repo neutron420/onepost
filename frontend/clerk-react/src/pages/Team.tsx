@@ -12,7 +12,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import Sidebar from "@/components/SidebarLayout"; // ✅ make sure this import path is correct
+import SidebarLayout from "@/components/SidebarLayout"; // ✅ Correct import
 import profilePic from "../assets/profilepic.jpg";
 
 const AboutPage = () => {
@@ -48,12 +48,11 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar /> {/* ✅ Sidebar added here */}
-
-      <div className="flex-1 bg-white text-gray-900">
+    <SidebarLayout>
+      {/* ✅ CORRECT - Wrap your content inside SidebarLayout */}
+      <div className="bg-white text-gray-900">
         {/* Hero Section */}
-        <section className="py-20 px-4">
+        <section className="pt-4 pb-20 px-4">
           <div className="max-w-5xl mx-auto text-center mb-16">
             <BookOpen className="w-12 h-12 mx-auto mb-4 text-green-600" />
             <h1 className="text-4xl font-bold">About Onepost</h1>
@@ -125,8 +124,9 @@ const AboutPage = () => {
                     <span className="text-white text-sm">✓</span>
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Solo Developer Journey</h3>
+                <h3 className="text-2xl font-bold mb-2">Ritesh Kumar Singh</h3>
                 <p className="text-gray-600 mb-4">Building Onepost from the ground up</p>
+                <p className="text-gray-600 mb-4">Full Stack Web Devoloper and Devops Engineer</p>
                 <div className="flex justify-center gap-3 mb-6">
                   <a href="#" className="text-gray-400 hover:text-gray-600">
                     <Github className="w-5 h-5" />
@@ -138,7 +138,7 @@ const AboutPage = () => {
                 <div className="text-gray-600 space-y-4">
                   <p>Onepost started as a personal project...</p>
                   <p>Every line of code, every design decision was made with intention and care.</p>
-                  <p>The journey has been challenging but incredibly rewarding, and I’m proud of what it’s become.</p>
+                  <p>The journey has been challenging but incredibly rewarding, and I'm proud of what it's become.</p>
                 </div>
               </div>
             </div>
@@ -209,7 +209,7 @@ const AboutPage = () => {
           </div>
         </section>
       </div>
-    </div>
+    </SidebarLayout>
   );
 };
 

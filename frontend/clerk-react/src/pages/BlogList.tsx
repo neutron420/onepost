@@ -14,7 +14,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 
-const POSTS_PER_PAGE = 4;
+const POSTS_PER_PAGE = 3;
 
 const BlogList: React.FC = () => {
   const initialBlogs = getBlogPosts();

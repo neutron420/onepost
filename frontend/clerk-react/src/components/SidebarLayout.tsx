@@ -159,7 +159,8 @@ const SidebarLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
       {/* Main Content */}
       <div className="relative z-0 min-h-screen">
-        <main className="px-4 sm:px-6 lg:px-8 py-3">
+        <main className="p-0 m-0">
+          {/* ✅ REMOVED ALL PADDING - px-4 sm:px-6 lg:px-8 py-3 */}
           {children}
         </main>
       </div>

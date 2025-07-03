@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect } from "react";
 import {
   Code,
@@ -121,8 +120,8 @@ const ContributePage = () => {
       <div className="bg-gradient-to-br from-slate-50 to-gray-100 w-full">
         <div className="max-w-6xl mx-auto px-4 py-0">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-3 mb-4">
               <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xl">O</span>
               </div>
@@ -142,8 +141,8 @@ const ContributePage = () => {
           </div>
 
           {/* Contribution Areas */}
-          <section className="mb-20">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+          <section className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
               How You Can Contribute
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -163,11 +162,11 @@ const ContributePage = () => {
           </section>
 
           {/* Tech Stack */}
-          <section className="mb-20">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+          <section className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
               Our Tech Stack
             </h2>
-            <p className="text-gray-600 text-center max-w-2xl mx-auto mb-12">
+            <p className="text-gray-600 text-center max-w-2xl mx-auto mb-6">
               We use modern, open technologies to build a performant and scalable publishing platform.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -178,13 +177,13 @@ const ContributePage = () => {
           </section>
 
           {/* View Repo Card */}
-          <section className="mb-20">
+          <section className="mb-8">
             <ViewRepoCard />
           </section>
 
           {/* Contributor Benefits */}
-          <section className="mb-20">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+          <section className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
               Contributor Benefits
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
