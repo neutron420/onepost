@@ -14,7 +14,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 
-const POSTS_PER_PAGE = 3;
+const POSTS_PER_PAGE = 4;
 
 const BlogList: React.FC = () => {
   const initialBlogs = getBlogPosts();
@@ -26,9 +26,15 @@ const BlogList: React.FC = () => {
   const [comments, setComments] = useState<{ [key: string]: string[] }>({});
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [showComments, setShowComments] = useState<{ [key: string]: boolean }>({});
-  const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
   const [editingBlog, setEditingBlog] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState<{ [key: string]: string }>({});
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(blogs.length / POSTS_PER_PAGE);
+  const paginatedBlogs = blogs.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
 
   const handleLike = (blogId: string) => {
     if (likedPosts[blogId]) {
@@ -108,7 +114,7 @@ const BlogList: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-8">
-            {blogs.slice(0, visibleCount).map((blog) => (
+            {paginatedBlogs.map((blog) => (
               <div
                 key={blog.id}
                 className="bg-white border border-gray-200 rounded-2xl shadow-md p-6 transition hover:shadow-lg"
@@ -246,13 +252,36 @@ const BlogList: React.FC = () => {
               </div>
             ))}
 
-            {visibleCount < blogs.length && (
-              <div className="text-center py-4">
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-6 gap-2">
                 <button
-                  onClick={() => setVisibleCount((prev) => prev + POSTS_PER_PAGE)}
-                  className="bg-gray-800 text-white px-6 py-2 rounded-xl hover:bg-gray-900"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
                 >
-                  View More Blogs ({blogs.length - visibleCount} remaining)
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`px-4 py-2 rounded-xl ${
+                      currentPage === i + 1
+                        ? "bg-gray-800 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Next
                 </button>
               </div>
             )}

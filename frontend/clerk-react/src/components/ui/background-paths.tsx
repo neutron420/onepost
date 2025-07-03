@@ -41,10 +41,7 @@ function FloatingPaths({ position }: { position: number }) {
             strokeOpacity={path.opacity}
             fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{
-              pathLength: 1,
-              opacity: path.opacity,
-            }}
+            animate={{ pathLength: 1, opacity: path.opacity }}
             transition={{
               duration: 8 + Math.random() * 4,
               repeat: Infinity,
@@ -145,8 +142,7 @@ export function BackgroundPaths({ title = "One Post" }: { title?: string }) {
                           stiffness: 100,
                           damping: 20,
                         }}
-                        className="inline-block text-transparent bg-clip-text 
-                          bg-gradient-to-r from-neutral-900 via-neutral-700 to-neutral-600"
+                        className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-neutral-900 via-neutral-700 to-neutral-600"
                       >
                         {letter}
                       </motion.span>
@@ -161,17 +157,12 @@ export function BackgroundPaths({ title = "One Post" }: { title?: string }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8 }}
-              className="inline-block group relative bg-gradient-to-b from-black/10 to-black/5 
-                p-px rounded-2xl backdrop-blur-lg 
-                overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+              className="inline-block group relative bg-gradient-to-b from-black/10 to-black/5 p-px rounded-2xl backdrop-blur-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
               <Button
                 onClick={handleDiscoverClick}
                 variant="ghost"
-                className="rounded-[1.15rem] px-8 py-6 text-lg font-semibold backdrop-blur-md 
-                  bg-white/95 hover:bg-white text-black transition-all duration-300 
-                  group-hover:-translate-y-0.5 border border-black/10
-                  hover:shadow-md"
+                className="rounded-[1.15rem] px-8 py-6 text-lg font-semibold backdrop-blur-md bg-white/95 hover:bg-white text-black transition-all duration-300 group-hover:-translate-y-0.5 border border-black/10 hover:shadow-md"
               >
                 <span className="opacity-90 group-hover:opacity-100 transition-opacity">
                   Draft Your Blogs

@@ -12,32 +12,27 @@ import HomePage from "./pages/home";
 import Write from "./pages/Write";
 import BlogList from "./pages/BlogList";
 import AboutPage from "./pages/AboutPage";
+import TeamPage from "./pages/Team";
+import CareerPage from "./pages/Career";
 import { PricingSectionDemo } from "./components/blocks/demo";
 import Testimonials from "./components/blocks/testimonials-section";
 import Notify from "./components/ui/Notify";
 
-// Protected Route Component
+
+// Protected Route Wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <SignedIn>
-      {children}
-    </SignedIn>
-  );
+  return <SignedIn>{children}</SignedIn>;
 };
 
-// Landing Page Component
+// Landing Page
 const LandingPage = () => (
-  <div className="min-h-screen flex flex-col bg-white">
+  <div className="flex flex-col flex-1 bg-white">
     <BackgroundPathsOverlay />
 
-    {/* Top-right user/notification panel */}
     <div className="absolute top-6 right-6 z-30 flex items-center gap-4">
-      {/* Show interactive Notify when signed in */}
       <SignedIn>
         <Notify />
       </SignedIn>
-
-      {/* Show static bell when signed out */}
       <SignedOut>
         <div className="p-2 rounded-full bg-gray-100 text-gray-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
@@ -51,16 +46,12 @@ const LandingPage = () => (
         </div>
       </SignedOut>
 
-      {/* Welcome + Avatar (Only if signed in) */}
       <SignedIn>
-        <div className="hidden sm:block px-4 py-2 bg-white/80 backdrop-blur-md 
-          rounded-xl border border-neutral-200/50 shadow-sm">
+        <div className="hidden sm:block px-4 py-2 bg-white/80 backdrop-blur-md rounded-xl border border-neutral-200/50 shadow-sm">
           <span className="text-sm font-medium text-neutral-700">Welcome back</span>
         </div>
-
         <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-neutral-200 to-neutral-300 
-            rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+          <div className="absolute -inset-1 bg-gradient-to-r from-neutral-200 to-neutral-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
           <div className="relative bg-white rounded-full p-1 shadow-lg">
             <UserButton
               appearance={{
@@ -75,7 +66,6 @@ const LandingPage = () => (
         </div>
       </SignedIn>
 
-      {/* Sign-in button when signed out */}
       <SignedOut>
         <SignInButton mode="redirect" redirectUrl="/dashboard" asChild>
           <button className="group relative px-8 py-3 bg-white/95 hover:bg-white 
@@ -101,28 +91,22 @@ const LandingPage = () => (
       </SignedOut>
     </div>
 
-    {/* Main background section */}
     <main className="flex-1 relative z-10">
       <BackgroundPaths title="One Post" />
     </main>
 
-    {/* Pricing + Testimonials */}
     <section className="bg-white/95 backdrop-blur-sm py-12 px-4 sm:px-8 lg:px-16 relative z-20">
       <div className="max-w-7xl mx-auto">
         <PricingSectionDemo />
         <Testimonials />
       </div>
     </section>
-
-    <div className="relative z-20">
-      <Footer7 />
-    </div>
   </div>
 );
 
-// Dashboard Component
+// Dashboard Page
 const Dashboard = () => (
-  <div className="min-h-screen flex flex-col bg-white">
+  <div className="flex flex-col flex-1 bg-white">
     <main className="flex-1 bg-gradient-to-br from-neutral-50 to-white">
       <HomePage />
     </main>
@@ -133,40 +117,49 @@ const Dashboard = () => (
         <Testimonials />
       </div>
     </section>
-
-    <Footer7 />
   </div>
 );
 
+// ✅ MAIN APP — FOOTER7 AT ROOT LEVEL
 export default function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/blogs" element={<BlogList />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/sign-in" element={<SignIn redirectUrl="/dashboard" />} />
-      
-      {/* Protected Routes */}
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/write-blog" 
-        element={
-          <ProtectedRoute>
-            <Write />
-          </ProtectedRoute>
-        } 
-      />
-      
-      {/* Fallback route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <div className="min-h-screen flex flex-col">
+      {/* Pages */}
+      <div className="flex-1">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/blogs" element={<BlogList />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/team" element={<TeamPage />} />
+          <Route path="/career" element={<CareerPage />} />
+          <Route path="/sign-in" element={<SignIn redirectUrl="/dashboard" />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/write-blog"
+            element={
+              <ProtectedRoute>
+                <Write />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+
+      {/* ✅ Footer on all pages */}
+      <Footer7 />
+    </div>
   );
 }
