@@ -1,14 +1,12 @@
 import {
   SignedIn,
   SignedOut,
-  SignInButton,
   UserButton,
   SignIn,
 } from "@clerk/clerk-react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link } from "react-router-dom";
 import { BackgroundPaths, BackgroundPathsOverlay } from "./components/ui/background-paths";
 import { Footer7 } from "./components/ui/footer-7";
-import HomePage from "./pages/home";
 import Write from "./pages/Write";
 import BlogList from "./pages/BlogList";
 import AboutPage from "./pages/AboutPage";
@@ -67,7 +65,7 @@ const LandingPage = () => (
       </SignedIn>
 
       <SignedOut>
-        <SignInButton mode="redirect" redirectUrl="/dashboard" asChild>
+        <Link to="/sign-in">
           <button className="group relative px-8 py-3 bg-white/95 hover:bg-white 
             text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl 
             transition-all duration-300 hover:-translate-y-0.5 
@@ -87,7 +85,7 @@ const LandingPage = () => (
               Sign In
             </span>
           </button>
-        </SignInButton>
+        </Link>
       </SignedOut>
     </div>
 
@@ -96,22 +94,6 @@ const LandingPage = () => (
     </main>
 
     <section className="bg-white/95 backdrop-blur-sm py-12 px-4 sm:px-8 lg:px-16 relative z-20">
-      <div className="max-w-7xl mx-auto">
-        <PricingSectionDemo />
-        <Testimonials />
-      </div>
-    </section>
-  </div>
-);
-
-// Dashboard Page
-const Dashboard = () => (
-  <div className="flex flex-col flex-1 bg-white">
-    <main className="flex-1 bg-gradient-to-br from-neutral-50 to-white">
-      <HomePage />
-    </main>
-
-    <section className="bg-white py-12 px-4 sm:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <PricingSectionDemo />
         <Testimonials />
@@ -133,17 +115,9 @@ export default function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/team" element={<TeamPage />} />
           <Route path="/career" element={<CareerPage />} />
-          <Route path="/sign-in" element={<SignIn redirectUrl="/dashboard" />} />
+          <Route path="/sign-in" element={<SignIn redirectUrl="/" />} />
 
           {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/write-blog"
             element={
