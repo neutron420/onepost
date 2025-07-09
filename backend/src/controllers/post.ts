@@ -12,11 +12,15 @@ export const createPost = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Title and content are required' });
     }
 
+    if (!authorId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
     const post = await prisma.post.create({
       data: {
         title,
         content,
-        imageUrl,
+        ...(imageUrl && { imageUrl }),
         authorId,
       },
       include: {
@@ -163,6 +167,10 @@ export const updatePost = async (req: Request, res: Response) => {
     const { title, content, imageUrl } = req.body;
     const userId = req.user?.sub;
 
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
     // Check if user owns the post
     const existingPost = await prisma.post.findUnique({
       where: { id },
@@ -213,6 +221,10 @@ export const deletePost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user?.sub;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
 
     // Check if user owns the post
     const existingPost = await prisma.post.findUnique({
