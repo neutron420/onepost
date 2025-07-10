@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import {
@@ -9,19 +9,19 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const SidebarLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
   const { user } = useUser();
   const [isCompanyExpanded, setIsCompanyExpanded] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  // Remove unused isMobile state and effect
+  // useEffect(() => {
+  //   const checkMobile = () => {
+  //     setIsMobile(window.innerWidth < 768);
+  //   };
+  //   checkMobile();
+  //   window.addEventListener("resize", checkMobile);
+  //   return () => window.removeEventListener("resize", checkMobile);
+  // }, []);
 
   const navLinks = [
     { name: "Home", path: "/", icon: <FaHome size={16} /> },
