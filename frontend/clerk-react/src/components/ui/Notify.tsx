@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useUser } from '@clerk/clerk-react';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 interface Notification {
   id: string;
@@ -10,11 +10,6 @@ interface Notification {
   read: boolean;
   type?: 'info' | 'success' | 'warning' | 'error';
 }
-
-// Socket.IO client instance
-const socket = io('http://localhost:3001', {
-  withCredentials: true,
-});
 
 export default function Notify() {
   const { user } = useUser();
@@ -35,27 +30,35 @@ export default function Notify() {
       type: 'success'
     },
   ]);
+  
+  const socketRef = useRef<Socket | null>(null);
+  const hasAddedWelcome = useRef(false);
 
-  // Add sign-in notification
+  // Add sign-in notification (only once)
   useEffect(() => {
-    if (user) {
-      const alreadyAdded = notifications.some(n => n.id === `signin-${user.id}`);
-      if (!alreadyAdded) {
-        const welcome: Notification = {
-          id: `signin-${user.id}`,
-          message: `Welcome back! You signed in with ${user.primaryEmailAddress?.emailAddress ?? 'your email'}`,
-          createdAt: new Date().toISOString(),
-          read: false,
-          type: 'success'
-        };
-        setNotifications(prev => [welcome, ...prev]);
-      }
+    if (user && !hasAddedWelcome.current) {
+      const welcome: Notification = {
+        id: `signin-${user.id}`,
+        message: `Welcome back! You signed in with ${user.primaryEmailAddress?.emailAddress ?? 'your email'}`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        type: 'success'
+      };
+      setNotifications(prev => [welcome, ...prev]);
+      hasAddedWelcome.current = true;
     }
   }, [user]);
 
-  // Socket.IO listener for real-time notifications
+  // Socket.IO connection and cleanup
   useEffect(() => {
     if (!user?.id) return;
+
+    // Create socket connection
+    socketRef.current = io('http://localhost:3001', {
+      withCredentials: true,
+    });
+
+    const socket = socketRef.current;
 
     // Join user-specific room
     socket.emit("join", user.id);
@@ -72,11 +75,39 @@ export default function Notify() {
       setNotifications(prev => [newNotification, ...prev]);
     });
 
-    // Clean up
+    // Connection event handlers
+    socket.on("connect", () => {
+      console.log("Connected to notification server");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from notification server");
+    });
+
+    socket.on("connect_error", (error) => {
+      console.error("Connection error:", error);
+    });
+
+    // Cleanup function
     return () => {
-      socket.off("notification");
+      if (socket) {
+        socket.off("notification");
+        socket.off("connect");
+        socket.off("disconnect");
+        socket.off("connect_error");
+        socket.disconnect();
+      }
     };
   }, [user?.id]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
