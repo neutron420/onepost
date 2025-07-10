@@ -10,12 +10,12 @@ import {
 
 const router = express.Router();
 
-// Protected routes - put specific routes first
+// Protected routes - put most specific routes first
 router.post('/toggle', verifyClerkJWT, toggleLike);
+router.get('/status/:postId', verifyClerkJWT, checkLikeStatus);
 
 // Public routes - put more specific routes before generic ones
 router.get('/post/:postId', getPostLikes);
 router.get('/user/:userId', getUserLikes);
-router.get('/status/:postId', verifyClerkJWT, checkLikeStatus);
 
 export default router;

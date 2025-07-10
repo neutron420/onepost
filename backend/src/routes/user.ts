@@ -13,15 +13,15 @@ import {
 
 const router = express.Router();
 
-// Public routes - put more specific routes first
+// Protected routes - put these first before any parameterized routes
+router.get('/me', verifyClerkJWT, getCurrentUser);
+router.put('/me', verifyClerkJWT, updateUser);
+router.delete('/me', verifyClerkJWT, deleteUser);
+
+// Public routes - put more specific routes before generic parameterized routes
 router.get('/search', searchUsers);
 router.get('/:id/activity', getUserActivity);
 router.get('/:id', getUser);
-
-// Protected routes - put these before the generic /:id route
-router.get('/me', verifyClerkJWT, getCurrentUser);  // Changed from '/' to '/me'
-router.put('/me', verifyClerkJWT, updateUser);      // Changed from '/' to '/me'
-router.delete('/me', verifyClerkJWT, deleteUser);   // Changed from '/' to '/me'
 
 // Webhook route for Clerk user creation
 router.post('/webhook/clerk', createUser);
