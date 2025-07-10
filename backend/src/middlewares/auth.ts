@@ -2,14 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 
-// Extend Request interface to include user property
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload & { sub: string };
-    }
-  }
-}
+// Note: The global type declaration is moved to src/types/express.d.ts
+// to avoid duplicate declarations
 
 const client = jwksClient({
   jwksUri: process.env.CLERK_JWKS_URL!,
