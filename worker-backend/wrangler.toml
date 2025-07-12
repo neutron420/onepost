@@ -1,0 +1,4 @@
+name = "onepost-worker"
+type = "typescript"
+account_id = "86dcd10a20b4db596c3395ebc9c354ea"  # ✅ Account ID must be in quotes
+compatibility_date = "2025-07-12"
