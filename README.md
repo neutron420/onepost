@@ -10,7 +10,6 @@
   <img src="https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
   <img src="https://img.shields.io/badge/PostgreSQL-14.5-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
-  <img src="https://img.shields.io/badge/Drizzle-ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" alt="Drizzle ORM">
   <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma ORM">
   <img src="https://img.shields.io/badge/Auth.js-NextAuth-222?style=for-the-badge&logo=auth.js&logoColor=white" alt="Auth.js">
 </div>
@@ -134,6 +133,5 @@ Project Link: [https://github.com/neutron420/onepost](https://github.com/neutron
 ## 🙏 Acknowledgments
 
 * [Next.js Team](https://vercel.com/)
-* [Drizzle ORM](https://orm.drizzle.team/)
 * [Auth.js](https://authjs.dev/)
 * [UploadThing](https://uploadthing.com/)
